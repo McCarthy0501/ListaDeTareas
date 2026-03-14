@@ -1,0 +1,17 @@
+# --- PYTHON / DJANGO ---
+venv/
+*.pyc
+__pycache__/
+db.sqlite3
+.env
+
+# --- NODE / REACT ---
+node_modules/
+dist/
+.eslintcache
+*.local
+
+# --- SISTEMA / LINUX / WINDOWS ---
+.DS_Store
+Thumbs.db
+.parrot_history
