@@ -9,7 +9,7 @@
 El imperio está dividido en dos frentes de batalla:
 
 * **📂 back-end/**: Corazón del sistema construido con **Python & Django**. Maneja la lógica, la base de datos y las APIs.
-* **📂 front-end/**: La cara del usuario construida con **HTML, CSS y JavaScript/React**. Interfaz fluida y reactiva.
+* **📂 front-end/**: La cara del usuario construida con **React/Tailwind**. Interfaz fluida y reactiva.
 
 ---
 
