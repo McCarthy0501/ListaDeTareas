@@ -24,9 +24,3 @@ Este repositorio sigue un flujo de trabajo profesional:
 * `test/pruebas-unitarias`: Laboratorio de testing.
 
 ---
-
-## 🛠️ Instalación Rápida
-
-1. **Clona el imperio:**
-   ```bash
-   git clone [https://github.com/McCarthy0501/Lista_de_Tareas.git](https://github.com/McCarthy0501/Lista_de_Tareas.git)
