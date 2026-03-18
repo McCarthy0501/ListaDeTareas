@@ -16,5 +16,5 @@ dist/
 Thumbs.db
 .parrot_history
 
-#-- vsCode --
+
 .vscode/

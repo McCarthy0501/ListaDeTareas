@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+import dj_database_url
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r0893%8_b(hp31q@$g4v$7-zfma6=_oe(4!dyr+2^gg6mbp*_e'
+SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-r0893%8_b(hp31q@$g4v$7-zfma6=_oe(4!dyr+2^gg6mbp*_e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',"https://listadetareas-q3z8.onrender.com"]
 
 
 # Application definition
@@ -76,7 +80,16 @@ WSGI_APPLICATION = 'back_notas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
+# aqui indicamos que si esta en produccion utilice postgres y en desarrollo sqlite
+
+DATABASE_URL="postgresql://postgres.mowglxqhlfspbzltehwg:Mushu1105$$@aws-1-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+if os.environ.get("DATABASE_URL"):
+    DATABASES = {
+        'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
+    }
+else:
+    DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
@@ -123,4 +136,5 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://lista-de-tareas-lovat.vercel.app/",
 ]
