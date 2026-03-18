@@ -1,6 +1,0 @@
-﻿asgiref
-Django>=5.0
-django-cors-headers
-djangorestframework
-sqlparse
-tzdata
