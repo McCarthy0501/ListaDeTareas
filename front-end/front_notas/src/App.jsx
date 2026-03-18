@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import './assets/css/index.css'
+import { API_URL } from './logic/logic'
 
-const API_URL = 'http://localhost:8000/api'
+
+
 
 function App() {
   const [tareas, setTareas] = useState([])
