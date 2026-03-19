@@ -19,7 +19,6 @@ function App() {
 
   const fetchTareas = async () => {
     try {
-      console.log('🔍 Fetching from:', `${API_URL}/tareas/`);
       const response = await fetch(`${API_URL}/tareas/`)
       const data = await response.json()
       setTareas(data)
