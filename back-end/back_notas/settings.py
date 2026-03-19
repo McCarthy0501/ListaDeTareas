@@ -24,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r0893%8_b(hp31q@$g4v$7-zfma6=_oe(4!dyr+2^gg6mbp*_e'
+SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-r0893%8_b(hp31q@$g4v$7-zfma6=_oe(4!dyr+2^gg6mbp*_e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',"listadetareas-q3z8.onrender.com"]
 
 
 # Application definition
@@ -136,4 +136,5 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://lista-de-tareas-lovat.vercel.app",
 ]
