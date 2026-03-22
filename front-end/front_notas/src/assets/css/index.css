@@ -108,6 +108,7 @@ body {
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .tarea-item:hover {
@@ -126,12 +127,39 @@ body {
   font-weight: 600;
   color: #FFFFFF;
   margin-bottom: 8px;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .tarea-descripcion {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-height: 100px;
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 194, 255, 0.5) rgba(255, 255, 255, 0.1);
+}
+
+.tarea-descripcion::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tarea-descripcion::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.tarea-descripcion::-webkit-scrollbar-thumb {
+  background: rgba(0, 194, 255, 0.5);
+  border-radius: 3px;
+}
+
+.tarea-descripcion::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 194, 255, 0.7);
 }
 
 .tarea-fecha {
@@ -330,4 +358,36 @@ body {
 .completed-title {
   text-decoration: line-through !important;
   opacity: 0.5;
+}
+
+@media (max-width: 600px) {
+  .tarea-item {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tarea-info {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .tarea-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .btn-action {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  body {
+    padding: 12px;
+  }
 }

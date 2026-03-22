@@ -1,65 +1,38 @@
 import { useState, useEffect } from 'react'
 import './assets/css/index.css'
-import { API_URL } from './logic/logic.js'
+import { useTask } from './hooks/useTask'
+import { API_URL,handleDelete } from './logic/logic'
+import { formatDate } from '../utils/format' 
+import { validateForm } from '../utils/validation'
+
 
 
 
 
 function App() {
-  const [tareas, setTareas] = useState([])
-  const [searchTerm, setSearchTerm] = useState('')
-  const [showModal, setShowModal] = useState(false)
-  const [editingTarea, setEditingTarea] = useState(null)
-  const [formData, setFormData] = useState({ titulo: '', descripcion: '' })
-  const [errors, setErrors] = useState({})
+  
+const {
+  fetchTareas,
+searchTerm,
+setSearchTerm,
+filteredTareas,
+loading}=useTask()
 
-  useEffect(() => {
-    fetchTareas()
-  }, [])
+const [showModal, setShowModal] = useState(false)
+const [editingTarea, setEditingTarea] = useState(null)
+const [formData, setFormData] = useState({ titulo: '', descripcion: '' })
+const [errors, setErrors] = useState({})
 
-  const fetchTareas = async () => {
-    try {
-      console.log('🔍 Fetching from:', `${API_URL}/tareas/`);
-      const response = await fetch(`${API_URL}/tareas/`)
-      const data = await response.json()
-      setTareas(data)
-      
-    } catch (error) {
-      console.error('❌ Error response:', text.substring(0, 200));
-      console.error('Error fetching tareas:', error)
-      console.log(data)
-    }
-  }
-
-  const validateForm = () => {
-    const newErrors = {}
-    const tituloTrimmed = formData.titulo.trim()
-    const descripcionTrimmed = formData.descripcion.trim()
-
-    if (!tituloTrimmed) {
-      newErrors.titulo = 'El título es requerido'
-    } else if (tituloTrimmed.length === 0 || /^\s+$/.test(tituloTrimmed)) {
-      newErrors.titulo = 'El título no puede ser solo espacios en blanco'
-    } else if (/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-_.,]/.test(tituloTrimmed)) {
-      newErrors.titulo = 'El título contiene demasiados caracteres especiales'
-    } else if (tituloTrimmed.length > 100) {
-      newErrors.titulo = 'El título no puede exceder 100 caracteres'
-    }
-
-    if (descripcionTrimmed && /[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\-_.,!?]/.test(descripcionTrimmed)) {
-      newErrors.descripcion = 'La descripción contiene demasiados caracteres especiales'
-    } else if (descripcionTrimmed.length > 500) {
-      newErrors.descripcion = 'La descripción no puede exceder 500 caracteres'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    if (!validateForm()) return
+
+    const errors=validateForm(formData) //llamamos las validaciones junto con los errores
+
+    setErrors(errors) //actualizamos el estado de los errores 
+
+    if(Object.keys(errors).length>0 ) return //si hay mas de un error no retorna nada 
 
     try {
       const url = editingTarea 
@@ -85,18 +58,10 @@ function App() {
     }
   }
 
-  const handleDelete = async (id) => {
-    try {
-      await fetch(`${API_URL}/tareas/${id}/`, { method: 'DELETE' })
-      fetchTareas()
-    } catch (error) {
-      console.error('Error deleting tarea:', error)
-    }
-  }
-
+ 
   const handleEdit = (tarea) => {
     setEditingTarea(tarea)
-    setFormData({ titulo: tarea.titulo, descripcion: tarea.descripcion || '' })
+    setFormData({ Título: tarea.titulo, Descripcion: tarea.descripcion || '' })
     setShowModal(true)
   }
 
@@ -120,21 +85,8 @@ function App() {
     setErrors({})
   }
 
-  const filteredTareas = tareas.filter(tarea =>
-    tarea.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (tarea.descripcion && tarea.descripcion.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('es-ES', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
+  
+  
 
   return (
     <div className="container">
@@ -156,9 +108,14 @@ function App() {
       </header>
 
       <main className="tareas-panel">
-        {filteredTareas.length === 0 ? (
+ {/* estado de carga */}  
+   {loading ? (
           <div className="empty-state">
-            <p>{searchTerm ? 'No se encontraron tareas' : 'No hay tareas yet. ¡Agrega una!'}</p>
+            <p>Cargando tareas...</p>
+          </div>
+        ) : filteredTareas.length === 0 ? (
+          <div className="empty-state">
+            <p>{searchTerm ? 'No se encontraron tareas' : 'No hay tareas registradas. ¡Agrega una!'}</p>
           </div>
         ) : (
           <div className="tareas-list">
@@ -191,7 +148,8 @@ function App() {
                   </button>
                   <button 
                     className="btn-action btn-delete"
-                    onClick={() => handleDelete(tarea.id)}
+                    
+                  onClick={() => confirm(`Eliminar ${tarea.titulo} de tu lista de tareas? `)?(handleDelete(tarea.id,fetchTareas)):(null) }  
                   >
                     Eliminar
                   </button>

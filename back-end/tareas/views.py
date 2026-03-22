@@ -4,12 +4,21 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Tarea
 from .serializers import TareaSerializer
+from rest_framework.pagination import PageNumberPagination
+
+class TareaPagination(PageNumberPagination):
+    page_size = 20  # tareas por página
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 
 class TareaListCreate(APIView):
     def get(self, request):
         tareas = Tarea.objects.all()
-        serializer = TareaSerializer(tareas, many=True)
-        return Response(serializer.data)
+        paginator = TareaPagination()
+        result = paginator.paginate_queryset(tareas, request)
+        serializer = TareaSerializer(result, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = TareaSerializer(data=request.data)
