@@ -9,7 +9,7 @@
 El imperio está dividido en dos frentes de batalla:
 
 * **📂 back-end/**: Corazón del sistema construido con **Python & Django**. Maneja la lógica, la base de datos y las APIs.
-* **📂 front-end/**: La cara del usuario construida con **React/Tailwind**. Interfaz fluida y reactiva.
+* **📂 front-end/**: La cara del usuario construida con **React**. Interfaz fluida
 
 ---
 
@@ -18,9 +18,6 @@ El imperio está dividido en dos frentes de batalla:
 Este repositorio sigue un flujo de trabajo profesional:
 * `main`: Versión estable y final.
 * `desarrollo`: Mezcla de todas las funcionalidades.
-* `front/interfaz-estilos`: Desarrollo de UI/UX.
-* `back/logica-apis`: Desarrollo de servidor y base de datos.
-* `qa/revision-entrega`: Control de calidad y bugs.
-* `test/pruebas-unitarias`: Laboratorio de testing.
+* `Prueba: Pruebas del mejoramiento de los modulos de la app
 
 ---
