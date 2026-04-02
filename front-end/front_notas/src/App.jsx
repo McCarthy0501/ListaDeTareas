@@ -50,6 +50,7 @@ const [errors, setErrors] = useState({})
       })
 
       if (response.ok) {
+        
         fetchTareas()
         closeModal()
       }
@@ -61,7 +62,7 @@ const [errors, setErrors] = useState({})
  
   const handleEdit = (tarea) => {
     setEditingTarea(tarea)
-    setFormData({ Título: tarea.titulo, Descripcion: tarea.descripcion || '' })
+    setFormData({ titulo: tarea.titulo, descripcion: tarea.descripcion || '' })
     setShowModal(true)
   }
 
@@ -171,7 +172,7 @@ const [errors, setErrors] = useState({})
                   type="text"
                   value={formData.titulo}
                   onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-                  placeholder="Ingresa el título"
+                  placeholder={editingTarea ? formData.titulo : "titulo de la tarea"}
                 />
                 {errors.titulo && <p className="error-text">{errors.titulo}</p>}
               </div>
@@ -180,9 +181,10 @@ const [errors, setErrors] = useState({})
                 <textarea
                   value={formData.descripcion}
                   onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                  placeholder="Ingresa la descripción"
+                  placeholder={editingTarea ? formData.descripcion : "Descripcion de la tarea"}
                 />
                 {errors.descripcion && <p className="error-text">{errors.descripcion}</p>}
+                {console.log(formData.descripcion)}
               </div>
               <div className="modal-actions">
                 <button type="button" className="btn-action btn-cancel" onClick={closeModal}>
