@@ -2,19 +2,60 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .models import Tarea
-from .serializers import TareaSerializer
+from .models import Tarea, Seccion
+from .serializers import TareaSerializer, SeccionSerializer
 from rest_framework.pagination import PageNumberPagination
 
 class TareaPagination(PageNumberPagination):
-    page_size = 20  # tareas por página
+    page_size = 20
     page_size_query_param = 'page_size'
     max_page_size = 100
 
 
+class SeccionListCreate(APIView):
+    def get(self, request):
+        secciones = Seccion.objects.all().order_by('-fecha_creacion')
+        serializer = SeccionSerializer(secciones, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SeccionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SeccionDetail(APIView):
+    def get(self, request, pk):
+        seccion = get_object_or_404(Seccion, pk=pk)
+        serializer = SeccionSerializer(seccion)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        seccion = get_object_or_404(Seccion, pk=pk)
+        serializer = SeccionSerializer(seccion, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        seccion = get_object_or_404(Seccion, pk=pk)
+        seccion.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class TareaListCreate(APIView):
     def get(self, request):
-        tareas = Tarea.objects.all()
+        seccion_id = request.query_params.get('seccion')
+        
+        if seccion_id:
+            tareas = Tarea.objects.filter(seccion_id=seccion_id)
+        else:
+            tareas = Tarea.objects.all()
+            
+        tareas = tareas.order_by('prioridad_orden', '-fecha_creacion')
         paginator = TareaPagination()
         result = paginator.paginate_queryset(tareas, request)
         serializer = TareaSerializer(result, many=True)

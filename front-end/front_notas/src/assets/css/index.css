@@ -12,8 +12,14 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
+}
+
+.seccion-actual-label {
+  color: rgba(0, 194, 255, 0.8);
+  font-size: 14px;
+  margin-top: 4px;
 }
 
 .header {
@@ -109,6 +115,44 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.3s ease;
   overflow: hidden;
+  position: relative;
+}
+
+.tarea-item.completada {
+  background: rgba(76, 175, 80, 0.15);
+  border-color: rgba(76, 175, 80, 0.4);
+  animation: completarAnimacion 0.5s ease;
+}
+
+@keyframes completarAnimacion {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); box-shadow: 0 0 30px rgba(76, 175, 80, 0.5); }
+  100% { transform: scale(1); }
+}
+
+.tarea-item.completada::before {
+  content: '✓';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #4CAF50;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  animation: checkIcono 0.4s ease;
+}
+
+@keyframes checkIcono {
+  0% { transform: translateY(-50%) scale(0); }
+  50% { transform: translateY(-50%) scale(1.3); }
+  100% { transform: translateY(-50%) scale(1); }
 }
 
 .tarea-item:hover {
@@ -389,5 +433,249 @@ body {
 
   body {
     padding: 12px;
+  }
+}
+
+/* Layout con sidebar */
+.main-layout {
+  display: flex;
+  gap: 20px;
+}
+
+.seccion-sidebar {
+  width: 250px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  height: fit-content;
+  flex-shrink: 0;
+}
+
+.seccion-sidebar h3 {
+  color: #FFFFFF;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.seccion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.seccion-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.seccion-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.seccion-item.active {
+  background: rgba(0, 194, 255, 0.2);
+  border-color: #00C2FF;
+  color: #FFFFFF;
+}
+
+.seccion-item-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seccion-item-container .seccion-item {
+  flex: 1;
+}
+
+.seccion-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.seccion-actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  opacity: 0.6;
+}
+
+.seccion-actions button:hover {
+  opacity: 1;
+}
+
+.seccion-edit {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+
+.seccion-edit input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 14px;
+}
+
+.seccion-edit button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.seccion-form input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.seccion-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.seccion-form-actions button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.seccion-form-actions button:first-child {
+  background: #00C2FF;
+  color: #FFFFFF;
+}
+
+.seccion-form-actions button:last-child {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-add-seccion {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0, 194, 255, 0.15);
+  border: 1px dashed rgba(0, 194, 255, 0.5);
+  border-radius: 10px;
+  color: #00C2FF;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.btn-add-seccion:hover {
+  background: rgba(0, 194, 255, 0.25);
+}
+
+.content-area {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Prioridad */
+.prioridad-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.prioridad-alta {
+  background: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
+}
+
+.prioridad-media {
+  background: rgba(255, 193, 7, 0.2);
+  color: #FFC107;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.prioridad-baja {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.tarea-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.tarea-seccion {
+  display: inline-block;
+  background: rgba(156, 39, 176, 0.2);
+  color: #CE93D8;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* Formulario select */
+.form-group select {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #00C2FF;
+  box-shadow: 0 0 0 3px rgba(0, 194, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.form-group select option {
+  background: #1A1D29;
+  color: #FFFFFF;
+}
+
+/* Responsive sidebar */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  
+  .seccion-sidebar {
+    width: 100%;
   }
 }
