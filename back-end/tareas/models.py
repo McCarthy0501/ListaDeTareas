@@ -29,6 +29,7 @@ class Tarea(models.Model):
     prioridad = models.CharField(max_length=10, choices=PRIORIDAD_CHOICES, default='media')
     prioridad_orden = models.IntegerField(default=2, editable=False)
     seccion = models.ForeignKey(Seccion, on_delete=models.CASCADE, null=True, blank=True, related_name='tareas')
+    fecha_vencimiento = models.DateField(null=True, blank=True, db_index=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 

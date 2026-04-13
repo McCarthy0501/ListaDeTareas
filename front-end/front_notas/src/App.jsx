@@ -3,7 +3,10 @@ import './assets/css/index.css'
 import { API_URL, handleDelete } from './logic/logic'
 import { formatDate } from '../utils/format' 
 import { validateForm } from '../utils/validation'
+import { exportarExcel, exportarReportesExcel } from './utils/excel'
 import { SeccionSidebar } from './components/SeccionSidebar'
+import { Calendario } from './components/Calendario'
+import { Reportes } from './components/Reportes'
 import { useSeccion } from './hooks/useSeccion'
 import { Toaster, toast } from 'react-hot-toast'
 
@@ -14,6 +17,8 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [seccionActual, setSeccionActual] = useState(null)
   const [seccionNombreActual, setSeccionNombreActual] = useState('Todas las tareas')
+  const [vistaActual, setVistaActual] = useState('tareas')
+  const [tareasCalendario, setTareasCalendario] = useState([])
 
   const fetchTareas = async () => {
     setLoading(true)
@@ -44,7 +49,7 @@ function App() {
 
   const [showModal, setShowModal] = useState(false)
   const [editingTarea, setEditingTarea] = useState(null)
-  const [formData, setFormData] = useState({ titulo: '', descripcion: '', prioridad: 'media', seccion: '' })
+  const [formData, setFormData] = useState({ titulo: '', descripcion: '', prioridad: 'media', seccion: '', fecha_vencimiento: '' })
   const [errors, setErrors] = useState({})
 
   const handleOpenModal = () => {
@@ -83,7 +88,8 @@ function App() {
         titulo: formData.titulo.trim(),
         descripcion: formData.descripcion.trim(),
         prioridad: formData.prioridad,
-        seccion: formData.seccion || null
+        seccion: formData.seccion || null,
+        fecha_vencimiento: formData.fecha_vencimiento || null
       }
 
       const response = await fetch(url, {
@@ -111,7 +117,8 @@ function App() {
       titulo: tarea.titulo, 
       descripcion: tarea.descripcion || '',
       prioridad: tarea.prioridad || 'media',
-      seccion: tarea.seccion || ''
+      seccion: tarea.seccion || '',
+      fecha_vencimiento: tarea.fecha_vencimiento || ''
     })
     setShowModal(true)
   }
@@ -149,7 +156,7 @@ function App() {
   const closeModal = () => {
     setShowModal(false)
     setEditingTarea(null)
-    setFormData({ titulo: '', descripcion: '', prioridad: 'media', seccion: '' })
+    setFormData({ titulo: '', descripcion: '', prioridad: 'media', seccion: '', fecha_vencimiento: '' })
     setErrors({})
   }
 
@@ -169,6 +176,36 @@ function App() {
       toast.success('Mostrando todas las tareas')
     } else {
       toast.success(`Mostrando tareas de: ${nombre}`)
+    }
+  }
+
+  const handleFechaSelect = (tareas, fecha) => {
+    setTareasCalendario(tareas)
+  }
+
+  const handleExportarExcel = () => {
+    if (tareasCalendario.length > 0) {
+      const success = exportarExcel(tareasCalendario, 'tareas_fecha')
+      if (success) {
+        toast.success('Excel exportado correctamente')
+      } else {
+        toast.error('Error al exportar')
+      }
+    } else {
+      toast.error('No hay tareas para exportar')
+    }
+  }
+
+  const handleExportarTareas = () => {
+    if (filteredTareas.length > 0) {
+      const success = exportarExcel(filteredTareas, 'tareas')
+      if (success) {
+        toast.success('Excel exportado correctamente')
+      } else {
+        toast.error('Error al exportar')
+      }
+    } else {
+      toast.error('No hay tareas para exportar')
     }
   }
 
@@ -210,94 +247,172 @@ function App() {
         />
         
         <div className="content-area">
-          <header className="header">
-            <div className="header-top">
-              <div>
-                <h1>Lista de Tareas</h1>
-                <p className="seccion-actual-label">{seccionNombreActual}</p>
-              </div>
-              <button 
-                className="btn-add" 
-                onClick={handleOpenModal}
-                disabled={secciones.length === 0}
-                style={{ opacity: secciones.length === 0 ? 0.5 : 1 }}
-                title={secciones.length === 0 ? 'Crea primero una sección' : 'Agregar Tarea'}
-              >
-                <span>+</span> Agregar Tarea
-              </button>
-            </div>
-            <div className="search-box">
-              <input
-                type="text"
-                placeholder="Buscar tareas..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </header>
+          <div className="nav-tabs">
+            <button 
+              className={`nav-tab ${vistaActual === 'tareas' ? 'active' : ''}`}
+              onClick={() => setVistaActual('tareas')}
+            >
+              📋 Tareas
+            </button>
+            <button 
+              className={`nav-tab ${vistaActual === 'calendario' ? 'active' : ''}`}
+              onClick={() => setVistaActual('calendario')}
+            >
+              📅 Calendario
+            </button>
+            <button 
+              className={`nav-tab ${vistaActual === 'reportes' ? 'active' : ''}`}
+              onClick={() => setVistaActual('reportes')}
+            >
+              📊 Reportes
+            </button>
+          </div>
 
-          <main className="tareas-panel">
-            {secciones.length === 0 ? (
-              <div className="empty-state">
-                <p>No hay secciones creadas. ¡Crea una sección para comenzar!</p>
-              </div>
-            ) : loading ? (
-              <div className="empty-state">
-                <p>Cargando tareas...</p>
-              </div>
-            ) : filteredTareas.length === 0 ? (
-              <div className="empty-state">
-                <p>{searchTerm ? 'No se encontraron tareas' : 'No hay tareas registradas. ¡Agrega una!'}</p>
-              </div>
-            ) : (
-              <div className="tareas-list">
-                {filteredTareas.map(tarea => (
-                  <div key={tarea.id} className={`tarea-item ${tarea.completada ? 'completada' : ''}`}>
-                    <div className="tarea-info">
-                      <div className="tarea-header">
-                        <h3 className="tarea-titulo" style={{ 
-                          textDecoration: tarea.completada ? 'line-through' : 'none',
-                          opacity: tarea.completada ? 0.6 : 1
-                        }}>
-                          {tarea.titulo}
-                        </h3>
-                        <span className={`prioridad-badge ${getPrioridadColor(tarea.prioridad)}`}>
-                          {tarea.prioridad}
-                        </span>
-                      </div>
-                      {tarea.descripcion && (
-                        <p className="tarea-descripcion">{tarea.descripcion}</p>
-                      )}
-                      <p className="tarea-fecha">Creada: {formatDate(tarea.fecha_creacion)}</p>
-                      {tarea.seccion_nombre && (
-                        <span className="tarea-seccion">{tarea.seccion_nombre}</span>
-                      )}
-                    </div>
-                    <div className="tarea-actions">
-                      <button 
-                        className="btn-action btn-complete"
-                        onClick={() => handleComplete(tarea)}
-                      >
-                        {tarea.completada ? 'Desmarcar' : 'Completar'}
-                      </button>
-                      <button 
-                        className="btn-action btn-edit"
-                        onClick={() => handleEdit(tarea)}
-                      >
-                        Editar
-                      </button>
-                      <button 
-                        className="btn-action btn-delete"
-                        onClick={() => handleDeleteTarea(tarea)}  
-                      >
-                        Eliminar
-                      </button>
-                    </div>
+          {vistaActual === 'tareas' && (
+            <>
+              <header className="header">
+                <div className="header-top">
+                  <div>
+                    <h1>Lista de Tareas</h1>
+                    <p className="seccion-actual-label">{seccionNombreActual}</p>
                   </div>
-                ))}
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button 
+                      className="export-btn" 
+                      onClick={handleExportarTareas}
+                      disabled={filteredTareas.length === 0}
+                    >
+                      📥 Excel
+                    </button>
+                    <button 
+                      className="btn-add" 
+                      onClick={handleOpenModal}
+                      disabled={secciones.length === 0}
+                      style={{ opacity: secciones.length === 0 ? 0.5 : 1 }}
+                      title={secciones.length === 0 ? 'Crea primero una sección' : 'Agregar Tarea'}
+                    >
+                      <span>+</span> Agregar Tarea
+                    </button>
+                  </div>
+                </div>
+                <div className="search-box">
+                  <input
+                    type="text"
+                    placeholder="Buscar tareas..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </header>
+
+              <main className="tareas-panel">
+                {secciones.length === 0 ? (
+                  <div className="empty-state">
+                    <p>No hay secciones creadas. ¡Crea una sección para comenzar!</p>
+                  </div>
+                ) : loading ? (
+                  <div className="empty-state">
+                    <p>Cargando tareas...</p>
+                  </div>
+                ) : filteredTareas.length === 0 ? (
+                  <div className="empty-state">
+                    <p>{searchTerm ? 'No se encontraron tareas' : 'No hay tareas registradas. ¡Agrega una!'}</p>
+                  </div>
+                ) : (
+                  <div className="tareas-list">
+                    {filteredTareas.map(tarea => (
+                      <div key={tarea.id} className={`tarea-item ${tarea.completada ? 'completada' : ''}`}>
+                        <div className="tarea-info">
+                          <div className="tarea-header">
+                            <h3 className="tarea-titulo" style={{ 
+                              textDecoration: tarea.completada ? 'line-through' : 'none',
+                              opacity: tarea.completada ? 0.6 : 1
+                            }}>
+                              {tarea.titulo}
+                            </h3>
+                            <span className={`prioridad-badge ${getPrioridadColor(tarea.prioridad)}`}>
+                              {tarea.prioridad}
+                            </span>
+                          </div>
+                          {tarea.descripcion && (
+                            <p className="tarea-descripcion">{tarea.descripcion}</p>
+                          )}
+                          <p className="tarea-fecha">Creada: {formatDate(tarea.fecha_creacion)}</p>
+                          {tarea.seccion_nombre && (
+                            <span className="tarea-seccion">{tarea.seccion_nombre}</span>
+                          )}
+                        </div>
+                        <div className="tarea-actions">
+                          <button 
+                            className="btn-action btn-complete"
+                            onClick={() => handleComplete(tarea)}
+                          >
+                            {tarea.completada ? 'Desmarcar' : 'Completar'}
+                          </button>
+                          <button 
+                            className="btn-action btn-edit"
+                            onClick={() => handleEdit(tarea)}
+                          >
+                            Editar
+                          </button>
+                          <button 
+                            className="btn-action btn-delete"
+                            onClick={() => handleDeleteTarea(tarea)}  
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </main>
+            </>
+          )}
+
+          {vistaActual === 'calendario' && (
+            <>
+              <header className="header">
+                <h1>Calendario de Tareas</h1>
+              </header>
+              <Calendario onFechaSelect={handleFechaSelect} />
+              <div className="action-buttons" style={{ marginTop: '20px' }}>
+                <button 
+                  className="export-btn" 
+                  onClick={handleExportarExcel}
+                  disabled={tareasCalendario.length === 0}
+                >
+                  📥 Exportar a Excel
+                </button>
               </div>
-            )}
-          </main>
+            </>
+          )}
+
+          {vistaActual === 'reportes' && (
+            <>
+              <header className="header">
+                <div className="header-top">
+                  <h1>Reportes</h1>
+                  <button 
+                    className="export-btn" 
+                    onClick={() => {
+                      fetch(`${API_URL}/tareas/reportes/`).then(r => r.json()).then(data => {
+                        const success = exportarReportesExcel(data)
+                        if (success) {
+                          toast.success('Reportes exportados correctamente')
+                        } else {
+                          toast.error('Error al exportar reportes')
+                        }
+                      })
+                    }}
+                  >
+                    📥 Exportar Reportes
+                  </button>
+                </div>
+              </header>
+              <Reportes />
+            </>
+          )}
         </div>
       </div>
 
@@ -351,6 +466,14 @@ function App() {
                   ))}
                 </select>
                 {errors.seccion && <p className="error-text">{errors.seccion}</p>}
+              </div>
+              <div className="form-group">
+                <label>Fecha de vencimiento (opcional)</label>
+                <input
+                  type="date"
+                  value={formData.fecha_vencimiento}
+                  onChange={(e) => setFormData({ ...formData, fecha_vencimiento: e.target.value })}
+                />
               </div>
               <div className="modal-actions">
                 <button type="button" className="btn-action btn-cancel" onClick={closeModal}>

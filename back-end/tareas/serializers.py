@@ -14,5 +14,5 @@ class TareaSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Tarea
-        fields = ['id', 'titulo', 'descripcion', 'completada', 'prioridad', 'prioridad_orden', 'seccion', 'seccion_nombre', 'fecha_creacion', 'fecha_actualizacion']
+        fields = ['id', 'titulo', 'descripcion', 'completada', 'prioridad', 'prioridad_orden', 'seccion', 'seccion_nombre', 'fecha_vencimiento', 'fecha_creacion', 'fecha_actualizacion']
         read_only_fields = ['id', 'prioridad_orden', 'fecha_creacion', 'fecha_actualizacion']
