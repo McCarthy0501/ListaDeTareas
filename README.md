@@ -18,6 +18,6 @@ El imperio está dividido en dos frentes de batalla:
 Este repositorio sigue un flujo de trabajo profesional:
 * `main`: Versión estable y final.
 * `desarrollo`: Mezcla de todas las funcionalidades.
-* `Prueba: Pruebas del mejoramiento de los modulos de la app
+* `Prueba` : Pruebas del mejoramiento de los modulos de la app
 
 ---
