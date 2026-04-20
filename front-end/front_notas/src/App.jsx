@@ -396,14 +396,23 @@ function App() {
                   <button 
                     className="export-btn" 
                     onClick={() => {
-                      fetch(`${API_URL}/tareas/reportes/`).then(r => r.json()).then(data => {
-                        const success = exportarReportesExcel(data)
-                        if (success) {
-                          toast.success('Reportes exportados correctamente')
-                        } else {
-                          toast.error('Error al exportar reportes')
-                        }
-                      })
+                      fetch(`${API_URL}/tareas/reportes/estadisticas/`)
+                        .then(r => {
+                          if (!r.ok) throw new Error('Error en la respuesta')
+                          return r.json()
+                        })
+                        .then(data => {
+                          const success = exportarReportesExcel(data)
+                          if (success) {
+                            toast.success('Reportes exportados correctamente')
+                          } else {
+                            toast.error('Error al exportar reportes')
+                          }
+                        })
+                        .catch(err => {
+                          console.error(err)
+                          toast.error('Error al cargar reportes')
+                        })
                     }}
                   >
                     📥 Exportar Reportes

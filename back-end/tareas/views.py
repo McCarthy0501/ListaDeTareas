@@ -14,6 +14,49 @@ class TareaPagination(PageNumberPagination):
     max_page_size = 100
 
 
+class ReporteEstadisticas(APIView):
+    def get(self, request):
+        total = Tarea.objects.count()
+        completadas = Tarea.objects.filter(completada=True).count()
+        pendientes = Tarea.objects.filter(completada=False).count()
+        sin_seccion = Tarea.objects.filter(seccion__isnull=True).count()
+        
+        por_prioridad = Tarea.objects.values('prioridad').annotate(count=Count('id'))
+        
+        por_seccion = Seccion.objects.annotate(
+            total=Count('tareas'),
+            completadas=Count('tareas', filter=Q(tareas__completada=True))
+        ).values('nombre', 'total', 'completadas')
+        
+        ultimos_7_dias = datetime.now().date() - timedelta(days=7)
+        creadas_semana = Tarea.objects.filter(fecha_creacion__date__gte=ultimos_7_dias).count()
+        
+        proximas_vencer = Tarea.objects.filter(
+            fecha_vencimiento__isnull=False,
+            completada=False,
+            fecha_vencimiento__lte=datetime.now().date() + timedelta(days=7)
+        ).count()
+        
+        vencidas = Tarea.objects.filter(
+            fecha_vencimiento__lt=datetime.now().date(),
+            completada=False
+        ).count()
+        
+        return Response({
+            'total': total,
+            'completadas': completadas,
+            'pendientes': pendientes,
+            'sin_seccion': sin_seccion,
+            'por_prioridad': list(por_prioridad),
+            'por_seccion': list(por_seccion),
+            'creadas_semana': creadas_semana,
+            'proximas_vencer': proximas_vencer,
+            'vencidas': vencidas,
+            'porcentaje_completado': round((completadas / total * 100) if total > 0 else 0, 1),
+            'porcentaje_pendiente': round((pendientes / total * 100) if total > 0 else 0, 1)
+        })
+
+
 class SeccionListCreate(APIView):
     def get(self, request):
         secciones = Seccion.objects.all().order_by('-fecha_creacion')

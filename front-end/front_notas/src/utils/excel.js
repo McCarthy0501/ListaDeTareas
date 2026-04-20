@@ -57,10 +57,14 @@ export const exportarReportesExcel = (data) => {
     { Métrica: 'Total de Tareas', Valor: data.total },
     { Métrica: 'Tareas Completadas', Valor: data.completadas },
     { Métrica: 'Tareas Pendientes', Valor: data.pendientes },
-    { Métrica: 'Creadas en 7 días', Valor: data.creadas_semana }
+    { Métrica: 'Tareas Sin Sección', Valor: data.sin_seccion },
+    { Métrica: 'Tareas Vencidas', Valor: data.vencidas },
+    { Métrica: 'Próximas a Vencer', Valor: data.proximas_vencer },
+    { Métrica: 'Creadas en 7 días', Valor: data.creadas_semana },
+    { Métrica: '% Completado', Valor: data.porcentaje_completado ? `${data.porcentaje_completado}%` : '0%' }
   ]
   const ws1 = XLSX.utils.json_to_sheet(summaryData)
-  ws1['!cols'] = [{ wch: 25 }, { wch: 10 }]
+  ws1['!cols'] = [{ wch: 25 }, { wch: 15 }]
   XLSX.utils.book_append_sheet(wb, ws1, 'Resumen')
 
   if (data.por_prioridad && data.por_prioridad.length > 0) {
