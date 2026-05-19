@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-r0893%8_b(hp31q@$g4v$7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1',"https://lista-de-tareas-lovat.vercel.app/","https://listadetareas-q3z8.onrender.com"]#"listadetareas-q3z8.onrender.com"]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',"lista-de-tareas-lovat.vercel.app","listadetareas-q3z8.onrender.com"]#"listadetareas-q3z8.onrender.com"]
 
 
 # Application definition
