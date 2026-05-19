@@ -1,6 +1,6 @@
 export const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
 
-
+//comentarios 
 export const handleDelete = async (id, fetchTareas) => {
     try {
       const response = await fetch(`${API_URL}/tareas/${id}/`, { method: 'DELETE' })
