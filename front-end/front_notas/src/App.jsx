@@ -23,15 +23,11 @@ function App() {
   const fetchTareas = async () => {
     setLoading(true)
     try {
-<<<<<<< HEAD
       let url = `${API_URL}/tareas/`
       if (seccionActual) {
         url += `?seccion=${seccionActual}`
       }
       const response = await fetch(url)
-=======
-      const response = await fetch(`${API_URL}/tareas/`)
->>>>>>> main
       const data = await response.json()
       setTareas(data.results || data)
     } catch (error) {
