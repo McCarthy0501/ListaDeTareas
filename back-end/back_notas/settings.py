@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-r0893%8_b(hp31q@$g4v$7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1',"listadetareas-q3z8.onrender.com"]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']#"listadetareas-q3z8.onrender.com"]
 
 
 # Application definition
@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'back_notas.wsgi.application'
 
 # aqui indicamos que si esta en produccion utilice postgres y en desarrollo sqlite
 
-DATABASE_URL="postgresql://postgres.mowglxqhlfspbzltehwg:Mushu1105$$@aws-1-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
+#DATABASE_URL="postgresql://postgres.mowglxqhlfspbzltehwg:Mushu1105$$@aws-1-us-east-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
 
 if os.environ.get("DATABASE_URL"):
     DATABASES = {
@@ -136,5 +136,6 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://lista-de-tareas-lovat.vercel.app",
+    
 ]
+#"https://lista-de-tareas-lovat.vercel.app",
